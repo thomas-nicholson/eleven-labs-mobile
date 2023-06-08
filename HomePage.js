@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import { Audio } from 'expo-av';
+import { Audio, InterruptionModeAndroid, InterruptionModeIOS
+       } from 'expo-av';
 
-const API_KEY = '8a8ca1298db8e97112bda505bd0dd32e'; // Your API key
+const API_KEY = 'API_KEY'; // Your API key
 
 
 const HomePage = ({ navigation }) => {
   const [voices, setVoices] = useState([]);
   const [models, setModels] = useState([]);
-  const [selectedVoice, setSelectedVoice] = useState(null);
-  const [selectedModel, setSelectedModel] = useState(null);
+  const [selectedVoice, setSelectedVoice] = useState("");
+  const [selectedModel, setSelectedModel] = useState("");
   const [text, setText] = useState('');
   const [audioURL, setAudioURL] = useState(null);
   const [soundObject, setSoundObject] = useState(null);
@@ -86,9 +87,9 @@ const HomePage = ({ navigation }) => {
   useEffect(() => {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
-      interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+      interruptionModeIOS: InterruptionModeIOS.DoNotMix,
       playsInSilentModeIOS: true,
-      interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+      interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
       shouldDuckAndroid: true,
       staysActiveInBackground: true,
       playThroughEarpieceAndroid: true
@@ -100,7 +101,7 @@ const HomePage = ({ navigation }) => {
     // ... fetch logic
     fetch('https://api.elevenlabs.io/v1/voices', {
       headers: {
-        'Xi-Api-Key': '8a8ca1298db8e97112bda505bd0dd32e'
+        'Xi-Api-Key': API_KEY
       }
     })
       .then(res => res.json())
@@ -111,7 +112,7 @@ const HomePage = ({ navigation }) => {
     // Get Models
     fetch('https://api.elevenlabs.io/v1/models', {
       headers: {
-        'Xi-Api-Key': '8a8ca1298db8e97112bda505bd0dd32e'
+        'Xi-Api-Key': API_KEY
       }
     })
       .then(res => res.json())
@@ -123,7 +124,7 @@ const HomePage = ({ navigation }) => {
     // ... fetch logic
     fetch('https://api.elevenlabs.io/v1/history', {
       headers: {
-        'Xi-Api-Key': '8a8ca1298db8e97112bda505bd0dd32e'
+        'Xi-Api-Key': API_KEY
       }
     })
       .then(res => res.json())
@@ -135,7 +136,7 @@ const HomePage = ({ navigation }) => {
     // ... fetch logic
     fetch('https://api.elevenlabs.io/v1/user/subscription', {
       headers: {
-        'Xi-Api-Key': '8a8ca1298db8e97112bda505bd0dd32e'
+        'Xi-Api-Key': API_KEY
       }
     })
       .then(res => res.json())
@@ -147,7 +148,7 @@ const HomePage = ({ navigation }) => {
     // ... fetch logic
     fetch('https://api.elevenlabs.io/v1/user', {
       headers: {
-        'Xi-Api-Key': '8a8ca1298db8e97112bda505bd0dd32e'
+        'Xi-Api-Key': API_KEY
       }
     })
       .then(res => res.json())
