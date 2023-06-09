@@ -1,37 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
-const API_KEY = ''; // Your API key
+import useStore from './store';
 
 const UserPage = () => {
-  const [subscription, setSubscription] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
-  
-  useEffect(() => {
-    // Get subscription info
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/user/subscription', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setSubscription(data);
-      });
+  const { subscription, userInfo } = useStore();
 
-    // Get user info
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/user', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setUserInfo(data);
-      });
-  });
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Hello, World!</Text>
