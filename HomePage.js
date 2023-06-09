@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import { Audio, InterruptionModeAndroid, InterruptionModeIOS
-       } from 'expo-av';
+import { Picker } from '@react-native-picker/picker';
+import {
+  Audio, InterruptionModeAndroid, InterruptionModeIOS
+} from 'expo-av';
 
-const API_KEY = 'API_KEY'; // Your API key
+const API_KEY = '';
 
-
-const HomePage = ({ navigation }) => {
+const HomePage = () => {
   const [voices, setVoices] = useState([]);
   const [models, setModels] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState("");
@@ -15,10 +15,6 @@ const HomePage = ({ navigation }) => {
   const [text, setText] = useState('');
   const [audioURL, setAudioURL] = useState(null);
   const [soundObject, setSoundObject] = useState(null);
-
-  const [history, setHistory] = useState([]);
-  const [subscription, setSubscription] = useState(null);
-  const [userInfo, setUserInfo] = useState(null);
 
   const handleTextChange = (value) => {
     setText(value);
@@ -74,7 +70,7 @@ const HomePage = ({ navigation }) => {
       if (response.ok) {
         const audioURL = response.url;
         await soundObject.unloadAsync();
-        await soundObject.loadAsync({ uri: audioURL }); 
+        await soundObject.loadAsync({ uri: audioURL });
         await soundObject.playAsync();
       } else {
         // Handle errors
@@ -94,7 +90,7 @@ const HomePage = ({ navigation }) => {
       staysActiveInBackground: true,
       playThroughEarpieceAndroid: true
     });
-    
+
 
     setSoundObject(new Audio.Sound());
     // Get voices
@@ -119,42 +115,6 @@ const HomePage = ({ navigation }) => {
       .then(data => {
         setModels(data);
       });
-
-    // Get history
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/history', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setHistory(data.history);
-      });
-
-    // Get subscription info
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/user/subscription', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setSubscription(data);
-      });
-
-    // Get user info
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/user', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setUserInfo(data);
-      });
   }, []);
 
   // ...synthesize speech logic
@@ -171,35 +131,11 @@ const HomePage = ({ navigation }) => {
           <Picker.Item key={model.model_id} label={model.name} value={model} />
         ))}
       </Picker>
-      
-      <TextInput onChangeText={handleTextChange} value={text} style={styles.inputStyles} multiline={true}/>
-      
+      <TextInput onChangeText={handleTextChange} value={text} style={styles.inputStyles} multiline={true} />
       <Button onPress={synthesizeSpeech} title="Synthesize Speech" color="#007BFF" />
-
       {audioURL && <Audio.Sound source={{ uri: audioURL }} />}
-      
-      <Button onPress={() => navigation.navigate('History', { history })} title="View History" />
+    </ScrollView>
+  );
+}
 
-      
-      <Text style={styles.titleStyles}>Subscription</Text>
-      {subscription && (
-        <View style={styles.historyItemStyles}>
-          <Text>Tier: {subscription.tier}</Text>
-          <Text>Character Limit: {subscription.character_limit}</Text>
-          <Text>Voice Limit: {subscription.voice_limit}</Text>
-        </View>
-      )}
-      
-      {userInfo && (
-        <View style={styles.historyItemStyles}>
-          <Text style={styles.titleStyles}>User</Text>
-          <Text>Email: {userInfo.email}</Text>
-          <Text>Is New User: {userInfo.is_new_user}</Text>
-        </View>
-      )}
-      </ScrollView>
-    );
-  }
-  
-  export default HomePage;
-  
+export default HomePage;
