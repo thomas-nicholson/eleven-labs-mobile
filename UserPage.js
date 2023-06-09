@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const API_KEY = '8a8ca1298db8e97112bda505bd0dd32e'; // Your API key
+const API_KEY = ''; // Your API key
 
 const UserPage = () => {
   const [subscription, setSubscription] = useState(null);
