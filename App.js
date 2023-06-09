@@ -9,10 +9,10 @@ import UserPage from './UserPage';
 import useStore from './store';
 
 const Stack = createStackNavigator();
-const API_KEY = ''; // Your API key
+const API_KEY = '95630de49b16b24e78cf989a4a69542b'; // Your API key
 
 const App = () => {
-  const { setSubscription, setUserInfo } = useStore();
+  const { setSubscription, setUserInfo, setHistory} = useStore();
 
   useEffect(() => {
     // Get subscription info
@@ -35,6 +35,17 @@ const App = () => {
       .then(res => res.json())
       .then(data => {
         setUserInfo(data);
+      });
+    // Get history
+    // ... fetch logic
+    fetch('https://api.elevenlabs.io/v1/history', {
+      headers: {
+        'Xi-Api-Key': API_KEY
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setHistory(data.history);
       });
   });
 

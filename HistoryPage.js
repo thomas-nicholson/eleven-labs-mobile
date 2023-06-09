@@ -1,24 +1,9 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
-
-const API_KEY = ''; // Your API key
+import useStore from './store';
 
 const HistoryPage = () => {
-  const [history, setHistory] = useState([]);
-
-  useEffect(() => {
-    /// Get history
-    // ... fetch logic
-    fetch('https://api.elevenlabs.io/v1/history', {
-      headers: {
-        'Xi-Api-Key': API_KEY
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        setHistory(data.history);
-      });
-  });
+  const { history } = useStore();
 
   const styles = StyleSheet.create({
     appStyles: {
