@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Assume you're using React Navigation
+
 import useStore from './store';
 
 const HistoryPage = () => {
   const { history } = useStore();
+  const navigation = useNavigation(); // Hook for navigation
 
   const styles = StyleSheet.create({
     appStyles: {
@@ -36,17 +39,27 @@ const HistoryPage = () => {
       padding: 10,
       marginBottom: 10
     },
+    deleteButtonStyles: {
+      color: 'red',
+      marginTop: 10
+    }
   });
+
+  const deleteHistoryItem = (id) => {
+    // Call API endpoint to delete item...
+    // Then remove it from local state if deletion was successful
+  }
 
   return (
     <ScrollView style={styles.appStyles}>
       <Text style={styles.titleStyles}>History</Text>
       {history.map(item => (
-        <View key={item.history_item_id} style={styles.historyItemStyles}>
+        <TouchableOpacity key={item.history_item_id} style={styles.historyItemStyles} onPress={() => navigation.navigate('HistoryItem', { item })}>
           <Text>{item.text}</Text>
           <Text>{item.voice_name}</Text>
           <Button onPress={() => getAudioFromHistory(item.history_item_id)} title="Play Audio" color="#007BFF" />
-        </View>
+          <Button onPress={() => deleteHistoryItem(item.history_item_id)} title="Delete" color="red" style={styles.deleteButtonStyles} />
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
