@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import {
   Audio, InterruptionModeAndroid, InterruptionModeIOS
 } from 'expo-av';
+import Slider from '@react-native-community/slider';
 
 const API_KEY = '';
 
@@ -15,6 +16,8 @@ const HomePage = () => {
   const [text, setText] = useState('');
   const [audioURL, setAudioURL] = useState(null);
   const [soundObject, setSoundObject] = useState(null);
+  const [stability, setStability] = useState(75);
+  const [similarity, setSimilarity] = useState(75);
 
   const handleTextChange = (value) => {
     setText(value);
@@ -55,7 +58,7 @@ const HomePage = () => {
 
   const synthesizeSpeech = async () => {
     try {
-      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice.voice_id}/stream`, {
+      const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${selectedVoice}/stream`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +71,7 @@ const HomePage = () => {
       });
 
       if (response.ok) {
-        const audioURL = response.url;
+        setAudioURL(response.status);
         await soundObject.unloadAsync();
         await soundObject.loadAsync({ uri: audioURL });
         await soundObject.playAsync();
@@ -103,6 +106,7 @@ const HomePage = () => {
       .then(res => res.json())
       .then(data => {
         setVoices(data.voices);
+        setSelectedVoice(data.voices[0].voice_id);
       });
 
     // Get Models
@@ -123,17 +127,40 @@ const HomePage = () => {
     <ScrollView style={styles.appStyles}>
       <Picker selectedValue={selectedVoice} onValueChange={(itemValue, itemIndex) => setSelectedVoice(itemValue)}>
         {voices.map(voice => (
-          <Picker.Item key={voice.voice_id} label={voice.name} value={voice} />
+          <Picker.Item key={voice.voice_id} label={voice.name} value={voice.voice_id} />
         ))}
       </Picker>
       <Picker selectedValue={selectedModel} onValueChange={(itemValue, itemIndex) => setSelectedModel(itemValue)}>
         {models.map(model => (
-          <Picker.Item key={model.model_id} label={model.name} value={model} />
+          <Picker.Item key={model.model_id} label={model.name} value={model.model_id} />
         ))}
       </Picker>
       <TextInput onChangeText={handleTextChange} value={text} style={styles.inputStyles} multiline={true} />
+      <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text>Stability: {stability}%</Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={100}
+          minimumTrackTintColor="#0000FF"
+          maximumTrackTintColor="#000000"
+          onValueChange={(stability) => setStability(stability)}
+          value={stability}
+        />
+      </View>
+      <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
+        <Text>Clarity + Similarity Enhancement: {similarity}%</Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={100}
+          minimumTrackTintColor="#0000FF"
+          maximumTrackTintColor="#000000"
+          onValueChange={(similarity) => setSimilarity(similarity)}
+          value={similarity}
+        />
+      </View>
       <Button onPress={synthesizeSpeech} title="Synthesize Speech" color="#007BFF" />
-      {audioURL && <Audio.Sound source={{ uri: audioURL }} />}
     </ScrollView>
   );
 }
