@@ -7,12 +7,13 @@ import HistoryPage from './HistoryPage'; // make sure the path is correct
 import HomePage from './HomePage';
 import UserPage from './UserPage';
 import useStore from './store';
+import HistoryItem from './HistoryItem';
 
 const Stack = createStackNavigator();
-const API_KEY = '95630de49b16b24e78cf989a4a69542b'; // Your API key
+const API_KEY = ''; // Your API key
 
 const App = () => {
-  const { setSubscription, setUserInfo, setHistory} = useStore();
+  const { setSubscription, setUserInfo, setHistory } = useStore();
 
   useEffect(() => {
     // Get subscription info
@@ -70,6 +71,7 @@ const App = () => {
             )
           })} />
         <Stack.Screen name="History" component={HistoryPage} />
+        <Stack.Screen name="HistoryItem" component={HistoryItem} />
         <Stack.Screen name="User" component={UserPage} />
       </Stack.Navigator>
     </NavigationContainer>
