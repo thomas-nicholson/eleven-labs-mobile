@@ -67,6 +67,10 @@ const HomePage = () => {
         body: JSON.stringify({
           text: text,
           model_id: selectedModel.model_id,
+          voice_settings: {
+            stability,
+            similarity_boost: similarity
+            }
         }),
       });
 
@@ -144,7 +148,7 @@ const HomePage = () => {
           maximumValue={100}
           minimumTrackTintColor="#0000FF"
           maximumTrackTintColor="#000000"
-          onValueChange={(stability) => setStability(stability)}
+          onValueChange={(stability) => setStability(Math.trunc(stability))}
           value={stability}
         />
       </View>
@@ -156,7 +160,7 @@ const HomePage = () => {
           maximumValue={100}
           minimumTrackTintColor="#0000FF"
           maximumTrackTintColor="#000000"
-          onValueChange={(similarity) => setSimilarity(similarity)}
+          onValueChange={(similarity) => setSimilarity(Math.trunc(similarity))}
           value={similarity}
         />
       </View>
