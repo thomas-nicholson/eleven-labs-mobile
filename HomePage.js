@@ -1,12 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ScrollView } from 'react-native';
+import styled from 'styled-components/native';
 import { Picker } from '@react-native-picker/picker';
 import {
   Audio, InterruptionModeAndroid, InterruptionModeIOS
 } from 'expo-av';
 import Slider from '@react-native-community/slider';
+import { Alert } from 'react-native';
 
-const API_KEY = '';
+const API_KEY = '95630de49b16b24e78cf989a4a69542b';
+
+const Container = styled.ScrollView`
+  padding: 20px;
+  background-color: #fff;
+`;
+
+const Title = styled.Text`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const StyledInput = styled.TextInput`
+  height: 100px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+`;
+
+const ButtonContainer = styled.TouchableOpacity`
+  background-color: #000;
+  padding: 15px;
+  border-radius: 5px;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const ButtonText = styled.Text`
+  color: #fff;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
 
 const HomePage = () => {
   const [voices, setVoices] = useState([]);
@@ -22,39 +58,6 @@ const HomePage = () => {
   const handleTextChange = (value) => {
     setText(value);
   }
-
-  const styles = StyleSheet.create({
-    appStyles: {
-      padding: 20,
-      // fontFamily: 'Arial',
-      backgroundColor: '#f5f5f5'
-    },
-    titleStyles: {
-      color: '#333',
-      marginBottom: 10
-    },
-    inputStyles: {
-      width: '100%',
-      height: 100,
-      padding: 10
-    },
-    buttonStyles: {
-      padding: 10,
-      color: 'white',
-      backgroundColor: '#007BFF',
-      borderRadius: 5,
-      marginTop: 10
-    },
-    audioPlayerStyles: {
-      marginTop: 20
-    },
-    historyItemStyles: {
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      padding: 10,
-      marginBottom: 10
-    },
-  });
 
   const synthesizeSpeech = async () => {
     try {
@@ -84,6 +87,7 @@ const HomePage = () => {
       }
     } catch (error) {
       // Handle errors
+      Alert.alert("Error", "Unable to synthesize speech at the moment. Please try again later.");
     }
   }
 
@@ -128,44 +132,49 @@ const HomePage = () => {
   // ...synthesize speech logic
 
   return (
-    <ScrollView style={styles.appStyles}>
-      <Picker selectedValue={selectedVoice} onValueChange={(itemValue, itemIndex) => setSelectedVoice(itemValue)}>
-        {voices.map(voice => (
-          <Picker.Item key={voice.voice_id} label={voice.name} value={voice.voice_id} />
-        ))}
-      </Picker>
-      <Picker selectedValue={selectedModel} onValueChange={(itemValue, itemIndex) => setSelectedModel(itemValue)}>
-        {models.map(model => (
-          <Picker.Item key={model.model_id} label={model.name} value={model.model_id} />
-        ))}
-      </Picker>
-      <TextInput onChangeText={handleTextChange} value={text} style={styles.inputStyles} multiline={true} />
-      <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-        <Text>Stability: {stability}%</Text>
+      <Container>
+        <Title>Select Voice:</Title>
+        <Picker selectedValue={selectedVoice} onValueChange={(itemValue, itemIndex) => setSelectedVoice(itemValue)}>
+          {voices.map(voice => (
+            <Picker.Item key={voice.voice_id} label={voice.name} value={voice.voice_id} />
+          ))}
+        </Picker>
+  
+        <Title>Select Model:</Title>
+        <Picker selectedValue={selectedModel} onValueChange={(itemValue, itemIndex) => setSelectedModel(itemValue)}>
+          {models.map(model => (
+            <Picker.Item key={model.model_id} label={model.name} value={model.model_id} />
+          ))}
+        </Picker>
+  
+        <Title>Enter Text:</Title>
+        <StyledInput onChangeText={handleTextChange} value={text} multiline={true} />
+  
+        <Title>Stability: {stability}%</Title>
         <Slider
-          style={{ width: 200, height: 40 }}
+          style={{ width: '100%', height: 40 }}
           minimumValue={0}
           maximumValue={100}
-          minimumTrackTintColor="#0000FF"
+          minimumTrackTintColor="#000"
           maximumTrackTintColor="#000000"
           onValueChange={(stability) => setStability(Math.trunc(stability))}
           value={stability}
         />
-      </View>
-      <View style={{ flex: 1, alignItems: 'stretch', justifyContent: 'center' }}>
-        <Text>Clarity + Similarity Enhancement: {similarity}%</Text>
+  
+        <Title>Clarity + Similarity Enhancement: {similarity}%</Title>
         <Slider
-          style={{ width: 200, height: 40 }}
+          style={{ width: '100%', height: 40 }}
           minimumValue={0}
           maximumValue={100}
-          minimumTrackTintColor="#0000FF"
+          minimumTrackTintColor="#000"
           maximumTrackTintColor="#000000"
           onValueChange={(similarity) => setSimilarity(Math.trunc(similarity))}
           value={similarity}
         />
-      </View>
-      <Button onPress={synthesizeSpeech} title="Synthesize Speech" color="#007BFF" />
-    </ScrollView>
+        <ButtonContainer onPress={synthesizeSpeech}>
+        <ButtonText>Synthesize Speech</ButtonText>
+      </ButtonContainer>
+    </Container>
   );
 }
 
